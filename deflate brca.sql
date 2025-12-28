@@ -1,0 +1,24 @@
+SELECT        TOP (10) vwPatientRegs.BCNo, vwPatientRegs.Date_of_DataEntry, vwPatientRegs.Date_of_Registration, vwPatientRegs.CreationDate, vwPatientRegs.PatientName, vwPatientRegs.Salutation, vwPatientRegs.Gender, 
+                         vwPatientRegs.Age, vwPatientRegs.DOB, vwPatientRegs.RelatedTo, vwPatientRegs.Relation, vwPatientRegs.MaritalStatus, vwPatientRegs.Race, vwPatientRegs.Age_at_Diagnosis, vwPatientRegs.Age_at_Registration, 
+                         vwPatientRegs.ContactDetails, vwPatientRegs.City, vwPatientRegs.District, vwPatientRegs.Landline1, vwPatientRegs.Landline2, vwPatientRegs.Landline3, vwPatientRegs.Mobile1, vwPatientRegs.Mobile2, 
+                         vwPatientRegs.Email1, vwPatientRegs.PatientIDNote, vwPastHistory.Age_at_Menarche, vwPastHistory.Age_at_first_pregnancy, vwPastHistory.Parity, vwPastHistory.Last_Delivery, vwPastHistory.Lac_His_1st_child, 
+                         vwPastHistory.Lac_His_2nd_child, vwPastHistory.Lac_His_3rd_child, vwPastHistory.Lac_His_4th_child, vwPastHistory.Average_Lactation_Time, vwPastHistory.Ovaries_Removed_Status, 
+                         vwPastHistory.Uterus_Removed_Status, vwPastHistory.Chronic_Disease_IHD_Status, vwPastHistory.IHD_Medication, vwPastHistory.Chronic_Disease_HTN_Status, vwPastHistory.HTN_Medication, 
+                         vwPastHistory.Chronic_Disease_COPD_Status, vwPastHistory.COPD_Medication, vwPastHistory.Chronic_Disease_DM_Status, vwPastHistory.DM_Medication, vwPastHistory.Chronic_Disease_Arthitis_Status, 
+                         vwPastHistory.Arthitis_Medication, vwPastHistory.Chronic_OtherDisease1, vwPastHistory.OtherDisease1_Medication, vwPastHistory.Chronic_OtherDisease2, vwPastHistory.OtherDisease2_Medication, 
+                         vwPastHistory.PastHistory_Note, vwPastHistory.AgeAtMenupause, vwPastHistory.BrSurgery, vwPastHistory.SurgeryHighlights, vwFamilyHistory.PedigreeAreParentsCousin, vwFamilyHistory.PedigreeIsHusbandCousin, 
+                         vwFamilyHistory.PedigreeAreHusbandParentsCousin, vwFamilyHistory.PedigreeAreSiblingsScreened, vwFamilyHistory.PedigreeAreChildrenScreened, vwFamilyHistory.Ovarian_Cancer_Status, 
+                         vwFamilyHistory.Age_at_Ovarian_Cancer_Diagnosis, vwFamilyHistory.Ovarian_Cancer_Relate_to_you_as, vwFamilyHistory.Ovarian_Cancer_Relate_to_you_as_Aunt, vwFamilyHistory.Ovarian_Cancer_Aunt_Degree_1st, 
+                         vwFamilyHistory.Ovarian_Cancer_Aunt_Degree_2nd, vwFamilyHistory.Ovarian_Cancer_Relate_to_you_as_Cousin, vwFamilyHistory.Ovarian_Cancer_Cousin_Degree_1st, 
+                         vwFamilyHistory.Ovarian_Cancer_Cousin_Degree_2nd, vwFamilyHistory.Breast_Cancer_Status, vwFamilyHistory.Age_at_Breast_Cancer_Diagnosis, vwFamilyHistory.Breast_Cancer_Relate_to_you_as, 
+                         vwFamilyHistory.Breast_Cancer_Relate_to_you_as_Aunt, vwFamilyHistory.Breast_Cancer_Aunt_Degree_1st, vwFamilyHistory.Breast_Cancer_Aunt_Degree_2nd, vwFamilyHistory.Breast_Cancer_Relate_to_you_as_Cousin, 
+                         vwFamilyHistory.Breast_Cancer_Cousin_Degree_1st, vwFamilyHistory.Breast_Cancer_Cousin_Degree_2nd, vwFamilyHistory.Other_Cancer_Status, vwFamilyHistory.Other_Cancer_Name, 
+                         vwFamilyHistory.Other_Cancer_Relate_to_you_as, vwFamilyHistory.Age_at_Other_Cancer_Diagnosis, vwFamilyHistory.Other_Cancer_Relate_to_you_as_Aunt, vwFamilyHistory.Other_Cancer_Aunt_Degree_1st, 
+                         vwFamilyHistory.Other_Cancer_Aunt_Degree_2nd, vwFamilyHistory.Other_Cancer_Relate_to_you_as_Cousin, vwFamilyHistory.Other_Cancer_Cousin_Degree_1st, vwFamilyHistory.Other_Cancer_Cousin_Degree_2nd, 
+                         vwFamilyHistory.Other_Disease_Status, vwFamilyHistory.Other_Disease_Name, vwFamilyHistory.Other_Disease_Relate_to_you_as, vwFamilyHistory.Age_at_Other_Disease_Diagnosis, 
+                         vwFamilyHistory.Other_Disease_Relate_to_you_as_Aunt, vwFamilyHistory.Other_Disease_Aunt_Degree_1st, vwFamilyHistory.Other_Disease_Aunt_Degree_2nd, vwFamilyHistory.Other_Disease_Relate_to_you_as_Cousin, 
+                         vwFamilyHistory.Other_Disease_Cousin_Degree_1st, vwFamilyHistory.Other_Disease_Cousin_Degree_2nd, vwFamilyHistory.FamilyHistory_Note, vwFamilyHistory.Ovarian_MultipleRelatives, 
+                         vwFamilyHistory.Br_MultipleRelatives, vwFamilyHistory.OthrCancer_MultipleRelatives, vwFamilyHistory.OthrDisease_MultipleRelatives
+FROM            vwPatientRegs INNER JOIN
+                         vwPastHistory ON vwPatientRegs.BCNo = vwPastHistory.BCNo INNER JOIN
+                         vwFamilyHistory ON vwPatientRegs.BCNo = vwFamilyHistory.BCNo

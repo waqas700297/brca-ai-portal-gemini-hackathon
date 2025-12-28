@@ -1,0 +1,5 @@
+An error occurred: module 'importlib.metadata' has no attribute 'packages_distributions'
+Found 34 models. Testing top ones...
+
+Testing: models/gemini-2.5-flash
+SUCCESS with models/gemini-2.5-flash: Hello! How can I help you today?
