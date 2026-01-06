@@ -5,7 +5,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 async def test_mcp():
-    python_path = r"C:\Users\waqas\anaconda3\envs\mcp-env\python.exe"
+    python_path = os.path.abspath(r".venv\Scripts\python.exe")
     server_script = os.path.abspath("mcp_server.py")
     
     print(f"Starting MCP server with: {python_path} {server_script}")
@@ -34,7 +34,7 @@ async def test_mcp():
                 # Test list_patients with a search
                 if any(t.name == "list_patients" for t in tools.tools):
                     print("\nTesting 'list_patients' tool...")
-                    result = await session.call_tool("list_patients", arguments={"search": "John"})
+                    result = await session.call_tool("list_patients", arguments={"search": "PARVEEN"})
                     print(f"Result content: {str(result.content)[:500]}...")
                 else:
                     print("\n'list_patients' tool not found!")

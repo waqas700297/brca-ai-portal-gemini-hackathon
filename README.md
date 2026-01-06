@@ -60,3 +60,20 @@ npm run dev
 
 > [!TIP]
 > **Database Initialization**: If you need to re-import the clinical CSV data into your database, run `python init_db.py` from the root folder.
+
+
+Starting MCP server with: ...\.venv\Scripts\python.exe ...\mcp_server.py
+Initializing session...
+Session initialized.
+Listing tools...
+Successfully connected to MCP Server!
+Available tools: ['list_patients', 'get_patient_details', 'generate_summary', 'ask_patient_question']
+
+Testing 'list_patients' tool...
+Result content: [
+  {
+    "BCNo": "Z-1774",
+    "PatientName": "ZAHIDA PARVEEN",
+    ...
+  }
+]
