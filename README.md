@@ -22,39 +22,45 @@ An NLP-powered application designed for Breast Cancer doctors to visualize patie
 - Python 3.9+ 
 - Node.js 20+
 - Google Gemini API Key
+- [ngrok account](https://ngrok.com/) (for remote access)
 
 ### 2. Configuration
-Create a `.env` file in the root directory and add your API key:
+Create a `.env` file in the root directory and add your API keys:
 ```env
-GOOGLE_API_KEY=your_api_key_here
+GOOGLE_API_KEY=your_gemini_api_key_here
+NGROK_AUTH_TOKEN=your_ngrok_auth_token_here
 ```
 
 ### 3. Running the Application
 
-To run the full application, you need to start both the **Backend** and the **Frontend** servers in separate terminal windows.
+#### 🏠 Local Access (Localhost)
+To run the full application locally, you need to start both the **Backend** and the **Frontend** servers in separate terminal windows.
 
-#### ▶️ Start Backend (FastAPI)
+**Start Backend (FastAPI):**
 ```bash
-# 1. Activate the environment
 .\.venv\Scripts\activate
-
-# 2. Run the server
 python main.py
 ```
-> The API will run at: **http://localhost:8000**
+> API: **http://localhost:8000**
 
-#### ▶️ Start Frontend (React)
+**Start Frontend (React):**
 ```bash
-# 1. Navigate to frontend folder
 cd frontend
-
-# 2. Install dependencies (first time only)
 npm install
-
-# 3. Start development server
 npm run dev
 ```
-> The Portal will be available at: **http://localhost:5173**
+> Portal: **http://localhost:5173**
+
+#### 🌐 Remote Access (via ngrok)
+To expose the application to the internet, use the automated startup script:
+
+```bash
+python run_app_with_ngrok.py
+```
+This script will:
+- Establish secure tunnels for both frontend and backend.
+- Automatically link the frontend to the backend's public URL.
+- Provide you with a public URL (e.g., `https://xxxx.ngrok-free.app`) to share.
 
 ---
 

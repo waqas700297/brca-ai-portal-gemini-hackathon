@@ -4,7 +4,10 @@ import ReactMarkdown from 'react-markdown';
 import { User, MessageSquare, Search, Activity, FileText, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = 'http://localhost:8000';
+// Bypass ngrok browser warning
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
 
 function App() {
   const [patients, setPatients] = useState([]);
