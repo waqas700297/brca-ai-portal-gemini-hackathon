@@ -104,6 +104,17 @@ body {
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
+  outline: none;
+}
+
+select.chat-input {
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+}
+
+select.chat-input option {
+  background-color: var(--bg-secondary);
+  color: white;
 }
 
 .markdown-content {

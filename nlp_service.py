@@ -1,23 +1,65 @@
-import importlib_metadata
-import importlib.metadata
-importlib.metadata.packages_distributions = importlib_metadata.packages_distributions
-
 import os
+import json
 import google.generativeai as genai
+from openai import OpenAI
+import requests
 import sqlite3
 import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
 
+CONFIG_FILE = "ai_config.json"
+
 class NLPService:
     def __init__(self):
-        self.api_key = os.getenv("GOOGLE_API_KEY")
-        if not self.api_key:
-            print("Warning: GOOGLE_API_KEY not found in environment variables.")
-        genai.configure(api_key=self.api_key)
-        # Using the direct library and the verified working model name from test_output.txt
-        self.model = genai.GenerativeModel('models/gemini-2.5-flash')
+        self.config = self.load_config()
+        self.setup_clients()
+
+    def load_config(self):
+        if os.path.exists(CONFIG_FILE):
+            try:
+                with open(CONFIG_FILE, "r") as f:
+                    config = json.load(f)
+                    # Sync with environment variable if API key is missing
+                    if not config["providers"]["google"]["apiKey"]:
+                        env_key = os.getenv("GOOGLE_API_KEY")
+                        if env_key:
+                            config["providers"]["google"]["apiKey"] = env_key
+                            self.save_config(config)
+                    return config
+            except Exception as e:
+                print(f"Error loading config: {e}")
+        
+        # Default config fallback
+        default_config = {
+            "selectedModel": "google:gemini-2.5-flash",
+            "providers": {
+                "google": {"apiKey": os.getenv("GOOGLE_API_KEY") or "", "models": ["gemini-2.5-flash", "gemini-1.5-pro"]},
+                "openai": {"apiKey": "", "models": ["gpt-4o", "gpt-4o-mini"]},
+                "ollama": {"endpoint": "http://localhost:11434", "models": ["llama3", "mistral"]}
+            }
+        }
+        return default_config
+
+    def save_config(self, config):
+        self.config = config
+        with open(CONFIG_FILE, "w") as f:
+            json.dump(config, f, indent=2)
+        self.setup_clients()
+
+    def setup_clients(self):
+        # Google Setup
+        google_config = self.config["providers"]["google"]
+        if google_config["apiKey"]:
+            genai.configure(api_key=google_config["apiKey"])
+        
+        # OpenAI Setup
+        openai_config = self.config["providers"]["openai"]
+        if openai_config["apiKey"]:
+            self.openai_client = OpenAI(api_key=openai_config["apiKey"])
+        else:
+            self.openai_client = None
 
     def get_patient_context(self, bcno):
         conn = sqlite3.connect("patient_data.db")
@@ -33,6 +75,38 @@ class NLPService:
         conn.close()
         return context[:10000]
 
+    def _generate_content(self, prompt):
+        selected = self.config["selectedModel"]
+        provider, model_name = selected.split(":")
+
+        if provider == "google":
+            model = genai.GenerativeModel(f"models/{model_name}")
+            response = model.generate_content(prompt)
+            return response.text
+        
+        elif provider == "openai":
+            if not self.openai_client:
+                return "Error: OpenAI API key not configured."
+            response = self.openai_client.chat.completions.create(
+                model=model_name,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.choices[0].message.content
+        
+        elif provider == "ollama":
+            endpoint = self.config["providers"]["ollama"]["endpoint"]
+            try:
+                response = requests.post(
+                    f"{endpoint}/api/generate",
+                    json={"model": model_name, "prompt": prompt, "stream": False}
+                )
+                response.raise_for_status()
+                return response.json()["response"]
+            except Exception as e:
+                return f"Error connecting to Ollama: {str(e)}"
+        
+        return "Error: Unknown provider selected."
+
     def generate_summary(self, bcno):
         context = self.get_patient_context(bcno)
         if not context:
@@ -41,8 +115,7 @@ class NLPService:
         prompt = f"You are a medical expert in Breast Cancer. Summarize the following patient data for a doctor. Focus on clinical diagnosis, stage, relevant investigations, and surgery details.\nPatient Data:\n{context}"
         
         try:
-            response = self.model.generate_content(prompt)
-            return response.text
+            return self._generate_content(prompt)
         except Exception as e:
             if "429" in str(e):
                 return "The AI service is currently at its limit (Quota Exceeded). Please wait a minute and try again."
@@ -56,8 +129,7 @@ class NLPService:
         prompt = f"You are a medical assistant for Breast Cancer doctors. Answer the doctor's question based on the provided patient data. If the data is not available, state that.\nPatient Data:\n{context}\n\nQuestion: {question}"
         
         try:
-            response = self.model.generate_content(prompt)
-            return response.text
+            return self._generate_content(prompt)
         except Exception as e:
             if "429" in str(e):
                 return "The AI service is currently at its limit (Quota Exceeded). Please try again in 1 minute."

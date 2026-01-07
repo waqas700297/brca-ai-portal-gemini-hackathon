@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import pandas as pd
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import importlib_metadata
 import importlib.metadata
 importlib.metadata.packages_distributions = importlib_metadata.packages_distributions
@@ -107,6 +107,18 @@ def ask_question(request: QuestionRequest):
         return {"answer": answer}
     except Exception as e:
         print(f"Error in ask_question: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/config")
+def get_config():
+    return nlp.config
+
+@app.post("/config")
+def save_config(config: Dict[str, Any]):
+    try:
+        nlp.save_config(config)
+        return {"status": "success"}
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
