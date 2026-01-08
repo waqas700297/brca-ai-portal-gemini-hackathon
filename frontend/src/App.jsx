@@ -7,6 +7,7 @@ import { jsPDF } from "jspdf";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 import { saveAs } from "file-saver";
 import html2canvas from 'html2canvas';
+import Login from './Login';
 
 // Bypass ngrok browser warning
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
@@ -26,7 +27,10 @@ function App() {
   const [answerCopied, setAnswerCopied] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [currentScreen, setCurrentScreen] = useState('main'); // 'main' or 'config'
+
   const [config, setConfig] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
   const summaryPrintRef = useRef();
   const answerPrintRef = useRef();
@@ -128,6 +132,11 @@ function App() {
     exportToPDF(answerPrintRef, `BrCa_Analysis_${selectedBcNo}.pdf`);
   };
 
+  const handleLogin = (loggedInUser) => {
+    setUser(loggedInUser);
+    setIsAuthenticated(true);
+  };
+
   // Helper for Word Parsing
   const parseMarkdownToDocx = (text) => {
     const docChildren = [];
@@ -220,6 +229,10 @@ function App() {
       saveAs(blob, `BrCa_Analysis_${selectedBcNo}.docx`);
     });
   };
+
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   if (!config) return <div className="loading-screen">Loading application...</div>;
 
