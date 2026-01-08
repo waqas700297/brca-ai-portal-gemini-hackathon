@@ -1,5 +1,5 @@
 {
-  "selectedModel": "ollama:llama3",
+  "selectedModel": "google:gemini-2.5-flash",
   "providers": {
     "google": {
       "apiKey": "AIzaSyC1k3RypJIDstFs2T9sa1zbV1-eTRZVmYA",
