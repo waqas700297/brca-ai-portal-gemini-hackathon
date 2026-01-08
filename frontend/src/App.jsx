@@ -429,7 +429,7 @@ function App() {
                     <div className="glass-card">
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
                         <MessageSquare size={20} color="var(--accent-color)" />
-                        <h3 style={{ margin: 0 }}>Ask Patient Data</h3>
+                        <h3 style={{ margin: 0 }}>Q/A - Patient Data</h3>
                       </div>
                       <div style={{ marginBottom: '16px' }}>
                         <input
