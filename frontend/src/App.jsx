@@ -23,6 +23,7 @@ function App() {
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPatientsLoading, setIsPatientsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [answerCopied, setAnswerCopied] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -38,9 +39,16 @@ function App() {
   useEffect(() => {
     // Load patients
     const delayDebounceFn = setTimeout(() => {
+      setIsPatientsLoading(true);
       axios.get(`${API_BASE}/patients?search=${searchTerm}`)
-        .then(res => setPatients(res.data))
-        .catch(err => console.error(err));
+        .then(res => {
+          setPatients(res.data);
+          setIsPatientsLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsPatientsLoading(false);
+        });
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
@@ -339,16 +347,23 @@ function App() {
               </div>
             </div>
             <div style={{ flex: 1, overflowY: 'auto' }}>
-              {patients.map(p => (
-                <div
-                  key={p.BCNo}
-                  className={`patient-list-item ${selectedBcNo === p.BCNo ? 'selected' : ''}`}
-                  onClick={() => handlePatientSelect(p.BCNo)}
-                >
-                  <div style={{ fontWeight: 600 }}>{p.PatientName}</div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>ID: {p.BCNo} • Age: {p.Age}</div>
+              {isPatientsLoading ? (
+                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <Activity className="spin" size={24} style={{ marginBottom: '10px' }} />
+                  <p>Loading record(s)....Please wait</p>
                 </div>
-              ))}
+              ) : (
+                patients.map(p => (
+                  <div
+                    key={p.BCNo}
+                    className={`patient-list-item ${selectedBcNo === p.BCNo ? 'selected' : ''}`}
+                    onClick={() => handlePatientSelect(p.BCNo)}
+                  >
+                    <div style={{ fontWeight: 600 }}>{p.PatientName}</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>ID: {p.BCNo} • Age: {p.Age}</div>
+                  </div>
+                ))
+              )}
             </div>
 
             <div style={{ padding: '20px', borderTop: '1px solid var(--glass-border)' }}>
