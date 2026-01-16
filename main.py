@@ -59,7 +59,7 @@ def get_patients(search: Optional[str] = None):
     else:
         query = """
         SELECT * 
-        FROM PatientCaseSummaryReport WHERE BCNO IS 
+        FROM PatientCaseSummaryReport
         LIMIT 20000
         """
         df = pd.read_sql_query(query, conn)
