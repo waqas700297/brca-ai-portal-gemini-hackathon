@@ -10,14 +10,7 @@ def init_db():
     
     # List of files to import
     files = [
-        "patients.csv",
-        "clinicaldiagnosis.csv",
-        "examinations.csv",
-        "familyhistory.csv",
-        "followup.csv",
-        "investigations.csv",
-        "pasthistory.csv",
-        "surgery.csv"
+        "PatientCaseSummaryReport.csv"
     ]
     
     for file_name in files:

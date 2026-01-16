@@ -37,31 +37,30 @@ class PatientSummary(BaseModel):
     Age: Optional[int]
     Gender: Optional[str]
     Stage: Optional[str]
-    Diagnosis: Optional[str]
+    FinalHistopathologicalDiagnosis: Optional[str]
+    DiseaseStatus: Optional[str]
 
 @app.get("/")
 def read_root():
-    return {"message": "BrCa AI Analysis API is running"}
+    return {"message": "BrCa AI Analysis API is running - Powered by VisualWorks"}
 
 @app.get("/patients", response_model=List[PatientSummary])
 def get_patients(search: Optional[str] = None):
     conn = get_db_connection()
     if search:
         query = """
-        SELECT p.BCNo, p.PatientName, p.Age, p.Gender, cd.Stage, cd.FinalClinicalDiagnosis as Diagnosis
-        FROM patients p
-        LEFT JOIN clinicaldiagnosis cd ON p.BCNo = cd.BCNo
-        WHERE p.PatientName LIKE ? OR p.BCNo LIKE ?
+        SELECT * 
+        FROM PatientCaseSummaryReport
+        WHERE PatientName LIKE ? OR BCNo LIKE ?
         LIMIT 100
         """
         params = (f"%{search}%", f"%{search}%")
         df = pd.read_sql_query(query, conn, params=params)
     else:
         query = """
-        SELECT p.BCNo, p.PatientName, p.Age, p.Gender, cd.Stage, cd.FinalClinicalDiagnosis as Diagnosis
-        FROM patients p
-        LEFT JOIN clinicaldiagnosis cd ON p.BCNo = cd.BCNo
-        LIMIT 100
+        SELECT * 
+        FROM PatientCaseSummaryReport WHERE BCNO IS 
+        LIMIT 20000
         """
         df = pd.read_sql_query(query, conn)
     conn.close()
@@ -70,7 +69,7 @@ def get_patients(search: Optional[str] = None):
 @app.get("/patient/{bcno}")
 def get_patient_details(bcno: str):
     conn = get_db_connection()
-    tables = ["patients", "clinicaldiagnosis", "examinations", "familyhistory", "followup", "investigations", "pasthistory", "surgery"]
+    tables = ["PatientCaseSummaryReport"]
     details = {}
     for table in tables:
         query = f"SELECT * FROM {table} WHERE BCNo = ?"

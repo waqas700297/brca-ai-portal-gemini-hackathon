@@ -63,7 +63,7 @@ class NLPService:
 
     def get_patient_context(self, bcno):
         conn = sqlite3.connect("patient_data.db")
-        tables = ["patients", "clinicaldiagnosis", "examinations", "familyhistory", "investigations", "pasthistory", "surgery"]
+        tables = ["PatientCaseSummaryReport"]
         context = ""
         for table in tables:
             query = f"SELECT * FROM {table} WHERE BCNo LIKE ?"
@@ -118,7 +118,7 @@ class NLPService:
             return self._generate_content(prompt)
         except Exception as e:
             if "429" in str(e):
-                return "The AI service is currently at its limit (Quota Exceeded). Please wait a minute and try again."
+                return "The AI service is currently at its limit (Quota Exceeded). Please wait for some time and try again."
             return f"Error generating summary: {str(e)}"
 
     def ask_patient_question(self, bcno, question):
@@ -132,5 +132,5 @@ class NLPService:
             return self._generate_content(prompt)
         except Exception as e:
             if "429" in str(e):
-                return "The AI service is currently at its limit (Quota Exceeded). Please try again in 1 minute."
+                return "The AI service is currently at its limit (Quota Exceeded). Please wait for some time and try again."
             return f"Error answering question: {str(e)}"

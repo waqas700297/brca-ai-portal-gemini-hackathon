@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import users from './users.json'; // Importing users for mock authentication
+import LogoIcon from './LogoIcon';
 
 function Login({ onLogin }) {
     const [username, setUsername] = useState('');
@@ -62,9 +63,8 @@ function Login({ onLogin }) {
                             margin: '0 auto 16px',
                         }}
                     >
-                        {/* <Lock size={32} color="var(--accent-color)" /> */}
-                        <User size={32} color="var(--accent-color)" />
-
+                        <Lock size={32} color="var(--accent-color)" />
+                        {/* <LogoIcon width={256} height={256} color="var(--accent-color)" /> */}
                     </div>
                     <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Welcome</h1>
                     <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
