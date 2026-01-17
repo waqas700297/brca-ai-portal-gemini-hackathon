@@ -11,6 +11,8 @@ load_dotenv()
 
 CONFIG_FILE = "ai_config.json"
 
+DEFAULT_SUMMARY_PROMPT = "You are a medical expert in Breast Cancer. Summarize the following patient data for a doctor. Focus on clinical diagnosis, stage, relevant investigations, and surgery details."
+
 class NLPService:
     def __init__(self):
         self.config = self.load_config()
@@ -21,6 +23,17 @@ class NLPService:
             try:
                 with open(CONFIG_FILE, "r") as f:
                     config = json.load(f)
+                    
+                    # Migrate old config / Ensure 'prompts' section exists
+                    if "prompts" not in config:
+                        config["prompts"] = {
+                            "summary_prompt": DEFAULT_SUMMARY_PROMPT
+                        }
+                        self.save_config(config)
+                    elif "summary_prompt" not in config["prompts"]:
+                         config["prompts"]["summary_prompt"] = DEFAULT_SUMMARY_PROMPT
+                         self.save_config(config)
+
                     # Sync with environment variable if API key is missing
                     if not config["providers"]["google"]["apiKey"]:
                         env_key = os.getenv("GOOGLE_API_KEY")
@@ -38,6 +51,9 @@ class NLPService:
                 "google": {"apiKey": os.getenv("GOOGLE_API_KEY") or "", "models": ["gemini-2.5-flash", "gemini-1.5-pro"]},
                 "openai": {"apiKey": "", "models": ["gpt-4o", "gpt-4o-mini"]},
                 "ollama": {"endpoint": "http://localhost:11434", "models": ["llama3", "mistral"]}
+            },
+            "prompts": {
+                "summary_prompt": DEFAULT_SUMMARY_PROMPT
             }
         }
         return default_config
@@ -112,7 +128,8 @@ class NLPService:
         if not context:
             return "Patient data not found."
         
-        prompt = f"You are a medical expert in Breast Cancer. Summarize the following patient data for a doctor. Focus on clinical diagnosis, stage, relevant investigations, and surgery details.\nPatient Data:\n{context}"
+        summary_instruction = self.config.get("prompts", {}).get("summary_prompt", DEFAULT_SUMMARY_PROMPT)
+        prompt = f"{summary_instruction}\nPatient Data:\n{context}"
         
         try:
             return self._generate_content(prompt)

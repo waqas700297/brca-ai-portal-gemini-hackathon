@@ -63,8 +63,8 @@ function Login({ onLogin }) {
                             margin: '0 auto 16px',
                         }}
                     >
-                        <Lock size={32} color="var(--accent-color)" />
-                        {/* <LogoIcon width={64} height={64} color="var(--accent-color)" /> */}
+                        {/* <Lock size={32} color="var(--accent-color)" /> */}
+                        <LogoIcon width={32} height={32} color="var(--accent-color)" />
                     </div>
                     <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Welcome</h1>
                     <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 500 }}>BrCa AI Portal</h2>

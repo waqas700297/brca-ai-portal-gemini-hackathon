@@ -567,6 +567,9 @@ function App() {
                 </div>
 
                 <div style={{ display: 'grid', gap: '20px' }}>
+
+
+
                   <div className="config-section">
                     <h3 style={{ margin: '0 0 12px 0', borderBottom: '1px solid var(--glass-border)', paddingBottom: '8px' }}>Google AI</h3>
                     <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Google API Key</label>
@@ -610,6 +613,23 @@ function App() {
                       onChange={(e) => {
                         const newConfig = { ...config };
                         newConfig.providers.ollama.endpoint = e.target.value;
+                        setConfig(newConfig);
+                      }}
+                    />
+                  </div>
+                  <div style={{ marginTop: '12px', display: 'flex', gap: '12px' }}></div>
+                  {/* Prompts Section */}
+                  <div className="config-section">
+                    <h3 style={{ margin: '0 0 12px 0', borderBottom: '1px solid var(--glass-border)', paddingBottom: '8px' }}>Prompts</h3>
+                    <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Summary Prompt Instructions</label>
+                    <textarea
+                      className="chat-input"
+                      style={{ width: '100%', height: '100px', padding: '10px', resize: 'vertical' }}
+                      value={config.prompts?.summary_prompt || ''}
+                      onChange={(e) => {
+                        const newConfig = { ...config };
+                        if (!newConfig.prompts) newConfig.prompts = {};
+                        newConfig.prompts.summary_prompt = e.target.value;
                         setConfig(newConfig);
                       }}
                     />

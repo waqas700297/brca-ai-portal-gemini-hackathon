@@ -24,5 +24,8 @@
         "medllama2"
       ]
     }
+  },
+  "prompts": {
+    "summary_prompt": "You are a medical expert in Breast Cancer. Summarize the following patient data for a doctor. Focus on clinical diagnosis, stage, relevant investigations, and surgery details."
   }
 }
