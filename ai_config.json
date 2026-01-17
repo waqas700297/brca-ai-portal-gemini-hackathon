@@ -1,5 +1,5 @@
 {
-  "selectedModel": "google:gemini-2.5-flash",
+  "selectedModel": "openai:gpt-4o",
   "providers": {
     "google": {
       "apiKey": "AIzaSyC1k3RypJIDstFs2T9sa1zbV1-eTRZVmYA",
@@ -9,7 +9,7 @@
       ]
     },
     "openai": {
-      "apiKey": "",
+      "apiKey": "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",
       "models": [
         "gpt-4o",
         "gpt-4o-mini",

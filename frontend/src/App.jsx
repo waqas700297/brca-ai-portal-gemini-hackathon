@@ -429,14 +429,14 @@ function App() {
                               {copied ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
                               <span style={{ fontSize: '0.8rem', marginLeft: '4px' }}>{copied ? 'Copied' : 'Copy'}</span>
                             </button>
-                            <button
+                            {/* <button
                               className="copy-btn"
                               onClick={handleExportSummaryPDF}
                               title="Download PDF"
                             >
                               <FileDown size={16} />
                               <span style={{ fontSize: '0.8rem', marginLeft: '4px' }}>PDF</span>
-                            </button>
+                            </button> */}
                             <button
                               className="copy-btn"
                               onClick={handleExportSummaryWord}
@@ -489,14 +489,14 @@ function App() {
                                 {answerCopied ? <Check size={16} color="#4caf50" /> : <Copy size={16} />}
                                 <span style={{ fontSize: '0.8rem', marginLeft: '4px' }}>{answerCopied ? 'Copied' : 'Copy'}</span>
                               </button>
-                              <button
+                              {/* <button
                                 className="copy-btn"
                                 onClick={handleExportAnswerPDF}
                                 title="Download Answer PDF"
                               >
                                 <FileDown size={16} />
                                 <span style={{ fontSize: '0.8rem', marginLeft: '4px' }}>PDF</span>
-                              </button>
+                              </button> */}
                               <button
                                 className="copy-btn"
                                 onClick={handleExportAnswerWord}
