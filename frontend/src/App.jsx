@@ -12,8 +12,8 @@ import Login from './Login';
 // Bypass ngrok browser warning
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
-//const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis.onrender.com';
+//const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis.onrender.com';
 
 function App() {
   const [patients, setPatients] = useState([]);
