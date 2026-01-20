@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { User, MessageSquare, Search, Activity, FileText, Copy, Check, ChevronLeft, ChevronRight, Settings, ArrowLeft, Save, FileDown } from 'lucide-react';
+import { User, MessageSquare, Search, Activity, FileText, Copy, Check, ChevronLeft, ChevronRight, Settings, ArrowLeft, Save, FileDown, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { jsPDF } from "jspdf";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
@@ -12,8 +12,8 @@ import Login from './Login';
 // Bypass ngrok browser warning
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
 
-//const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
+//const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis.onrender.com';
 
 function App() {
   const [patients, setPatients] = useState([]);
@@ -161,6 +161,12 @@ function App() {
   const handleLogin = (loggedInUser) => {
     setUser(loggedInUser);
     setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    setCurrentScreen('main');
   };
 
   // Helper for Word Parsing
@@ -384,14 +390,24 @@ function App() {
               )}
             </div>
 
-            <div style={{ padding: '20px', borderTop: '1px solid var(--glass-border)' }}>
+            <div style={{ padding: '20px', borderTop: '1px solid var(--glass-border)', display: 'flex', gap: '10px' }}>
               <button
                 className="btn-secondary"
-                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
                 onClick={() => setCurrentScreen('config')}
+                title="Configure AI"
               >
                 <Settings size={18} />
-                Configure AI
+                {!isSidebarCollapsed && <span>Configure</span>}
+              </button>
+              <button
+                className="btn-secondary"
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255, 82, 82, 0.1)', color: '#ff5252', borderColor: '#ff5252' }}
+                onClick={handleLogout}
+                title="Logout"
+              >
+                <LogOut size={18} />
+                {!isSidebarCollapsed && <span>Logout</span>}
               </button>
             </div>
           </>
