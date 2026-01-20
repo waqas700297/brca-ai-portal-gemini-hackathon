@@ -45,24 +45,25 @@ def read_root():
     return {"message": "BrCa AI Analysis API is running - Powered by VisualWorks"}
 
 @app.get("/patients", response_model=List[PatientSummary])
-def get_patients(search: Optional[str] = None):
+def get_patients(search: Optional[str] = None, limit: int = 20000, offset: int = 0):
     conn = get_db_connection()
     if search:
         query = """
         SELECT * 
         FROM PatientCaseSummaryReport
         WHERE PatientName LIKE ? OR BCNo LIKE ?
-        LIMIT 100
+        LIMIT ? OFFSET ?
         """
-        params = (f"%{search}%", f"%{search}%")
+        params = (f"%{search}%", f"%{search}%", limit, offset)
         df = pd.read_sql_query(query, conn, params=params)
     else:
         query = """
         SELECT * 
         FROM PatientCaseSummaryReport
-        LIMIT 20000
+        LIMIT ? OFFSET ?
         """
-        df = pd.read_sql_query(query, conn)
+        params = (limit, offset)
+        df = pd.read_sql_query(query, conn, params=params)
     conn.close()
     return df.to_dict(orient="records")
 

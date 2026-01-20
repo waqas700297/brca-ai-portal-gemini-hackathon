@@ -37,21 +37,39 @@ function App() {
   const answerPrintRef = useRef();
 
   useEffect(() => {
-    // Load patients
-    const delayDebounceFn = setTimeout(() => {
+    // Load patients progressively
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    const fetchPatients = async () => {
       setIsPatientsLoading(true);
-      axios.get(`${API_BASE}/patients?search=${searchTerm}`)
-        .then(res => {
-          setPatients(res.data);
-          setIsPatientsLoading(false);
-        })
-        .catch(err => {
+      try {
+        // Step 1: Initial load (Top 100)
+        const initialRes = await axios.get(`${API_BASE}/patients?search=${searchTerm}&limit=100`, { signal });
+        setPatients(initialRes.data);
+        setIsPatientsLoading(false);
+
+        // Step 2: Background load (Remaining)
+        if (!searchTerm) { // Only do full background load if not searching
+          const remainingRes = await axios.get(`${API_BASE}/patients?search=${searchTerm}&offset=100&limit=35000`, { signal });
+          setPatients(prev => [...prev, ...remainingRes.data]);
+        }
+      } catch (err) {
+        if (!axios.isCancel(err)) {
           console.error(err);
           setIsPatientsLoading(false);
-        });
+        }
+      }
+    };
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchPatients();
     }, 500);
 
-    return () => clearTimeout(delayDebounceFn);
+    return () => {
+      clearTimeout(delayDebounceFn);
+      abortController.abort();
+    };
   }, [searchTerm]);
 
   useEffect(() => {
