@@ -1,16 +1,20 @@
 {
-  "selectedModel": "google:gemini-2.5-flash",
+  "selectedModel": "google:gemini-3-flash-preview",
   "providers": {
     "google": {
       "apiKey": "AIzaSyC1k3RypJIDstFs2T9sa1zbV1-eTRZVmYA",
       "models": [
+        "gemini-3-pro-preview",
+        "gemini-3-flash-preview",
         "gemini-2.5-flash",
-        "gemini-1.5-pro"
+        "gemini-1.5-pro",
+        "gemma-3-12b-it"
       ]
     },
     "openai": {
-      "apiKey": "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",
+      "apiKey": "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",
       "models": [
+        "gpt-5.2",
         "gpt-4o",
         "gpt-4o-mini",
         "gpt-3.5-turbo"
