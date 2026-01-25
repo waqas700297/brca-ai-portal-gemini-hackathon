@@ -1,6 +1,7 @@
 import os
 import json
-import google.generativeai as genai
+#import google.generativeai as genai
+import google.genai as genai
 import requests
 import sqlite3
 import pandas as pd
@@ -66,7 +67,7 @@ class NLPService:
         # Google Setup
         google_config = self.config["providers"]["google"]
         if google_config["apiKey"]:
-            genai.configure(api_key=google_config["apiKey"])
+            self.client = genai.Client(api_key=google_config["apiKey"])
 
     def get_patient_context(self, bcno):
         conn = sqlite3.connect("patient_data.db")
@@ -87,8 +88,13 @@ class NLPService:
         provider, model_name = selected.split(":")
 
         if provider == "google":
-            model = genai.GenerativeModel(f"models/{model_name}")
-            response = model.generate_content(prompt)
+            if not hasattr(self, 'client'):
+                 return "Error: Google Client not initialized (API Key missing?)"
+            
+            response = self.client.models.generate_content(
+                model=model_name,
+                contents=prompt
+            )
             return response.text
         return "Error: Unknown provider selected."
 

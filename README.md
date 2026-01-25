@@ -4,7 +4,7 @@ An NLP-powered application designed for Breast Cancer doctors to visualize patie
 
 ## 🌟 Key Features
 
-- **AI Case Summaries**: Automatic generation of clinical summaries for any selected patient using **Gemini 2.5 Flash**, **OpenAI GPTs** and **Ollama models**.
+- **AI Case Summaries**: Automatic generation of clinical summaries for any selected patient using **Gemini 3.0 Models**.
 - **Interactive Q&A**: A chat interface that allows doctors to ask specific questions about a patient's medical history, tumor details, or surgery highlights.
 - **Full Database Search**: Backend-powered search allows doctors to find any patient among more than 34,000 records instantly by Name or BCNo.
 - **Automated Data Import**: CSV data is imported into a local SQLite database for high-performance querying and AI context retrieval.

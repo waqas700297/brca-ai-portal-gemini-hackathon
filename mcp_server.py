@@ -2,7 +2,7 @@ from mcp.server.fastmcp import FastMCP
 import sqlite3
 import pandas as pd
 import os
-import google.generativeai as genai
+import google.genai as genai
 from dotenv import load_dotenv
 from typing import List, Optional
 
@@ -18,11 +18,11 @@ DB_NAME = "patient_data.db"
 # AI configuration
 api_key = os.getenv("GOOGLE_API_KEY")
 if api_key:
-    genai.configure(api_key=api_key)
+    client = genai.Client(api_key=api_key)
     # Using the verified working model name from nlp_service.py
-    model = genai.GenerativeModel('models/gemini-3-flash-preview')
+    model_name = 'gemini-3-flash-preview'
 else:
-    model = None
+    client = None
     print("Warning: GOOGLE_API_KEY not found in environment variables.")
 
 def get_db_connection():
@@ -100,7 +100,7 @@ def generate_summary(bcno: str) -> str:
     Args:
         bcno: The unique Patient ID (BCNo).
     """
-    if not model:
+    if not client:
         return "AI model not initialized. Check GOOGLE_API_KEY."
     
     context = get_patient_context(bcno)
@@ -110,7 +110,7 @@ def generate_summary(bcno: str) -> str:
     prompt = f"You are a medical expert in Breast Cancer. Summarize the following patient data for a doctor. Focus on clinical diagnosis, stage, relevant investigations, and surgery details.\nPatient Data:\n{context}"
     
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(model=model_name, contents=prompt)
         return response.text
     except Exception as e:
         if "429" in str(e):
@@ -126,7 +126,7 @@ def ask_patient_question(bcno: str, question: str) -> str:
         bcno: The unique Patient ID (BCNo).
         question: The doctor's question about the patient.
     """
-    if not model:
+    if not client:
         return "AI model not initialized. Check GOOGLE_API_KEY."
 
     context = get_patient_context(bcno)
@@ -136,7 +136,7 @@ def ask_patient_question(bcno: str, question: str) -> str:
     prompt = f"You are a medical assistant for Breast Cancer doctors. Answer the doctor's question based on the provided patient data. If the data is not available, state that.\nPatient Data:\n{context}\n\nQuestion: {question}"
     
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(model=model_name, contents=prompt)
         return response.text
     except Exception as e:
         if "429" in str(e):
