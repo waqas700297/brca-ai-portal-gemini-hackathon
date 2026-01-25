@@ -12,8 +12,8 @@ import Login from './Login';
 // Bypass ngrok browser warning
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
 
-//cnst API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
+//const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis.onrender.com';
 
 function App() {
   const [patients, setPatients] = useState([]);
@@ -587,16 +587,6 @@ function App() {
                         <option key={`google:${m}`} value={`google:${m}`}>{m}</option>
                       ))}
                     </optgroup>
-                    <optgroup label="OpenAI GPT">
-                      {config.providers.openai.models.map(m => (
-                        <option key={`openai:${m}`} value={`openai:${m}`}>{m}</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="Ollama (Local)">
-                      {config.providers.ollama.models.map(m => (
-                        <option key={`ollama:${m}`} value={`ollama:${m}`}>{m}</option>
-                      ))}
-                    </optgroup>
                   </select>
                 </div>
 
@@ -620,37 +610,6 @@ function App() {
                     />
                   </div>
 
-                  <div className="config-section">
-                    <h3 style={{ margin: '0 0 12px 0', borderBottom: '1px solid var(--glass-border)', paddingBottom: '8px' }}>OpenAI</h3>
-                    <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>OpenAI API Key</label>
-                    <input
-                      type="password"
-                      className="chat-input"
-                      placeholder="Enter OpenAI API Key..."
-                      value={config.providers.openai.apiKey}
-                      onChange={(e) => {
-                        const newConfig = { ...config };
-                        newConfig.providers.openai.apiKey = e.target.value;
-                        setConfig(newConfig);
-                      }}
-                    />
-                  </div>
-
-                  <div className="config-section">
-                    <h3 style={{ margin: '0 0 12px 0', borderBottom: '1px solid var(--glass-border)', paddingBottom: '8px' }}>Ollama (Local)</h3>
-                    <label style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Ollama Endpoint</label>
-                    <input
-                      type="text"
-                      className="chat-input"
-                      placeholder="http://localhost:11434"
-                      value={config.providers.ollama.endpoint}
-                      onChange={(e) => {
-                        const newConfig = { ...config };
-                        newConfig.providers.ollama.endpoint = e.target.value;
-                        setConfig(newConfig);
-                      }}
-                    />
-                  </div>
                   <div style={{ marginTop: '12px', display: 'flex', gap: '12px' }}></div>
                   {/* Prompts Section */}
                   <div className="config-section">

@@ -1,7 +1,6 @@
 import os
 import json
 import google.generativeai as genai
-from openai import OpenAI
 import requests
 import sqlite3
 import pandas as pd
@@ -34,8 +33,9 @@ class NLPService:
                          config["prompts"]["summary_prompt"] = DEFAULT_SUMMARY_PROMPT
                          self.save_config(config)
 
-                    # Sync with environment variable if API key is missing
-                    if not config["providers"]["google"]["apiKey"]:
+                    # Sync with environment variable if API key is missing or is a placeholder
+                    api_key_val = config["providers"]["google"].get("apiKey")
+                    if not api_key_val or api_key_val == "GOOGLE_API_KEY":
                         env_key = os.getenv("GOOGLE_API_KEY")
                         if env_key:
                             config["providers"]["google"]["apiKey"] = env_key
@@ -46,11 +46,9 @@ class NLPService:
         
         # Default config fallback
         default_config = {
-            "selectedModel": "google:gemini-2.5-flash",
+            "selectedModel": "gemini-3-flash-preview",
             "providers": {
-                "google": {"apiKey": os.getenv("GOOGLE_API_KEY") or "", "models": ["gemini-2.5-flash", "gemini-1.5-pro"]},
-                "openai": {"apiKey": "", "models": ["gpt-4o", "gpt-4o-mini"]},
-                "ollama": {"endpoint": "http://localhost:11434", "models": ["llama3", "mistral"]}
+                "google": {"apiKey": os.getenv("GOOGLE_API_KEY") or "", "models": ["gemini-3-flash-preview", "gemini-3-pro-preview"]}
             },
             "prompts": {
                 "summary_prompt": DEFAULT_SUMMARY_PROMPT
@@ -69,13 +67,6 @@ class NLPService:
         google_config = self.config["providers"]["google"]
         if google_config["apiKey"]:
             genai.configure(api_key=google_config["apiKey"])
-        
-        # OpenAI Setup
-        openai_config = self.config["providers"]["openai"]
-        if openai_config["apiKey"]:
-            self.openai_client = OpenAI(api_key=openai_config["apiKey"])
-        else:
-            self.openai_client = None
 
     def get_patient_context(self, bcno):
         conn = sqlite3.connect("patient_data.db")
@@ -99,28 +90,6 @@ class NLPService:
             model = genai.GenerativeModel(f"models/{model_name}")
             response = model.generate_content(prompt)
             return response.text
-        
-        elif provider == "openai":
-            if not self.openai_client:
-                return "Error: OpenAI API key not configured."
-            response = self.openai_client.chat.completions.create(
-                model=model_name,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return response.choices[0].message.content
-        
-        elif provider == "ollama":
-            endpoint = self.config["providers"]["ollama"]["endpoint"]
-            try:
-                response = requests.post(
-                    f"{endpoint}/api/generate",
-                    json={"model": model_name, "prompt": prompt, "stream": False}
-                )
-                response.raise_for_status()
-                return response.json()["response"]
-            except Exception as e:
-                return f"Error connecting to Ollama: {str(e)}"
-        
         return "Error: Unknown provider selected."
 
     def generate_summary(self, bcno):

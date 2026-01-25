@@ -20,7 +20,7 @@ api_key = os.getenv("GOOGLE_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
     # Using the verified working model name from nlp_service.py
-    model = genai.GenerativeModel('models/gemini-2.5-flash')
+    model = genai.GenerativeModel('models/gemini-3-flash-preview')
 else:
     model = None
     print("Warning: GOOGLE_API_KEY not found in environment variables.")
@@ -34,7 +34,7 @@ def get_patient_context(bcno: str) -> str:
     """Helper to get patient context for AI tools."""
     conn = get_db_connection()
     # Fixed table list from nlp_service.py
-    tables = ["patients", "clinicaldiagnosis", "examinations", "familyhistory", "investigations", "pasthistory", "surgery"]
+    tables = ["PatientCaseSummaryReport"]
     context = ""
     for table in tables:
         query = f"SELECT * FROM {table} WHERE BCNo LIKE ?"
@@ -57,19 +57,17 @@ def list_patients(search: Optional[str] = None) -> List[dict]:
     conn = get_db_connection()
     if search:
         query = """
-        SELECT p.BCNo, p.PatientName, p.Age, p.Gender, cd.Stage, cd.FinalClinicalDiagnosis as Diagnosis
-        FROM patients p
-        LEFT JOIN clinicaldiagnosis cd ON p.BCNo = cd.BCNo
-        WHERE p.PatientName LIKE ? OR p.BCNo LIKE ?
+        SELECT * 
+        FROM PatientCaseSummaryReport
+        WHERE PatientName LIKE ? OR BCNo LIKE ?
         LIMIT 100
         """
         params = (f"%{search}%", f"%{search}%")
         df = pd.read_sql_query(query, conn, params=params)
     else:
         query = """
-        SELECT p.BCNo, p.PatientName, p.Age, p.Gender, cd.Stage, cd.FinalClinicalDiagnosis as Diagnosis
-        FROM patients p
-        LEFT JOIN clinicaldiagnosis cd ON p.BCNo = cd.BCNo
+        SELECT * 
+        FROM PatientCaseSummaryReport
         LIMIT 100
         """
         df = pd.read_sql_query(query, conn)
@@ -85,7 +83,7 @@ def get_patient_details(bcno: str) -> dict:
         bcno: The unique Patient ID (BCNo).
     """
     conn = get_db_connection()
-    tables = ["patients", "clinicaldiagnosis", "examinations", "familyhistory", "followup", "investigations", "pasthistory", "surgery"]
+    tables = ["PatientCaseSummaryReport"]
     details = {}
     for table in tables:
         query = f"SELECT * FROM {table} WHERE BCNo = ?"
