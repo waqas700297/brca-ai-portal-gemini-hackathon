@@ -13,7 +13,7 @@ import Login from './Login';
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
 
 //const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-portal-gemini-hackathon.onrender.com';
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://brca-ai-analysis-gemini.onrender.com';
 
 function App() {
   const [patients, setPatients] = useState([]);
