@@ -1,2 +1,0 @@
-Frontend: https://62e0d69c8a6f.ngrok-free.app
-Backend: https://7584b3efa0b8.ngrok-free.app

@@ -2,7 +2,7 @@
   "selectedModel": "google:gemini-3-flash-preview",
   "providers": {
     "google": {
-      "apiKey": "AIzaSyAKuyGSSzU0FebxTkBU5cglo5q_sFG3gpM",
+      "apiKey": "[GCP_API_KEY]",
       "models": [
         "gemini-3-pro-preview",
         "gemini-3-flash-preview"
